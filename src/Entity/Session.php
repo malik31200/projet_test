@@ -23,8 +23,8 @@ class Session
     #[ORM\Column]
     private ?\DateTimeImmutable $endTime = null;
 
-    #[ORM\Column]
-    private ?int $avaibleSpots = null;
+    #[ORM\Column(name: 'avaible_spots')]
+    private ?int $availableSpots = null;
 
     #[ORM\Column(length: 20)]
     private ?string $status = null;
@@ -73,14 +73,14 @@ class Session
         return $this;
     }
 
-    public function getAvaibleSpots(): ?int
+    public function getAvailableSpots(): ?int
     {
-        return $this->avaibleSpots;
+        return $this->availableSpots;
     }
 
-    public function setAvaibleSpots(int $avaibleSpots): static
+    public function setAvailableSpots(int $availableSpots): static
     {
-        $this->avaibleSpots = $avaibleSpots;
+        $this->availableSpots = $availableSpots;
 
         return $this;
     }
