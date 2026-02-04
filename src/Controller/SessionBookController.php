@@ -14,56 +14,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[IsGranted('ROLE_USER')] // All the mandatory routes to being connected
 class SessionBookController extends AbstractController
 {
-    // POST /api/session-books - Buy a session-book
-    #[Route('', name: 'api_session_book_create', methods: ['POST'])]
-    public function create(Request $request, EntityManagerInterface $em): JsonResponse
-    {
-        $user = $this->getUser();
-
-        $data = json_decode($request->getContent(), true);
-
-        // Validation of required fields
-        if (!isset($data['name']) || !isset($data['totalSessions']) || !isset($data['price'])) {
-            return $this->json(['error' => 'Le nom, la quantité et le prix doivent être saisies'], 400);   
-        }
-
-        // Create a session-book
-        $sessionBook = new SessionBook();
-        $sessionBook->setUser($user);
-        $sessionBook->setName($data['name']);
-        $sessionBook->setTotalSessions($data['totalSessions']);
-        $sessionBook->setRemainingSessions($data['totalSessions']);
-        $sessionBook->setPrice($data['price']);
-        $sessionBook->setCreatedAt(new \DateTimeImmutable());
-
-        // Date of expiration optionnelle (par défaut 1 an)
-        if (isset($data['expiresAt'])) {
-            try {
-                $expiresAt = new \DateTimeImmutable($data['expiresAt']);
-                $sessionBook->setExpiresAt($expiresAt);
-            } catch (\Exception $e) {
-                return $this->json(['error' => 'Format de date invalide pour expiresAt'], 400);
-            }
-        } else {
-            // Par défaut : expire dans 1 an 
-            $sessionBook->setExpiresAt((new \DateTimeImmutable())->modify('+12 months'));
-        }
-        
-        $em->persist($sessionBook);
-        $em->flush();
-        
-        return $this->json([
-            'id' => $sessionBook->getId(),
-            'name' => $sessionBook->getName(),
-            'totalSessions' => $sessionBook->getTotalSessions(),
-            'remainingSessions' => $sessionBook->getRemainingSessions(),
-            'price' => $sessionBook->getPrice(),
-            'createdAt' => $sessionBook->getCreatedAt()->format('Y-m-d H:i:s'),
-            'expiresAt' => $sessionBook->getExpiresAt()->format('Y-m-d H:i:s'),
-        ], 201);
-    }
-    
-    // GET /api/session-books - my sesion-books
+    // GET /api/session-books - my session-books
     #[Route('', name: 'api_session_book_list', methods: ['GET'])]
     public function list(EntityManagerInterface $em): JsonResponse
     {
