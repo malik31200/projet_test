@@ -56,19 +56,10 @@ class WebController extends AbstractController
 
     // User Dashboard
     #[Route('/dashboard', name: 'app_dashboard')]
-    // #[IsGranted('ROLE_USER')] // Temporairement commenté pour tester
+    #[IsGranted('ROLE_USER')]
     public function dashboard(EntityManagerInterface $em): Response
     {
         $user = $this->getUser();
-
-        // Si pas connecté, afficher page vide pour tester
-        if (!$user) {
-            return $this->render('web/dashboard.html.twig', [
-                'registrations' => [],
-                'sessionBooks' => [],
-                'payments' => [],
-            ]);
-        }
 
         $registrations = $em->getRepository(Registration::class)->findBy(
             ['user' => $user],
@@ -96,7 +87,7 @@ class WebController extends AbstractController
 
     // Admin Page
     #[Route('/admin', name: 'app_admin')]
-    // #[IsGranted('ROLE_ADMIN')] //temporairement commenté pour tester
+    #[IsGranted('ROLE_ADMIN')] //temporairement commenté pour tester
     public function admin(EntityManagerInterface $em): Response
     {
         $coursesCount = $em->getRepository(Course::class)->count([]);

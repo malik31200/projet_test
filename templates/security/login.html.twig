@@ -1,0 +1,53 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - Actual Sport{% endblock %}
+
+{% block body %}
+    <div class="auth-container">
+        <div class="auth-card">
+            <h1 class="auth-title">🔐 Connexion</h1>
+
+            {% if  error %}
+                <div class="alert alert-error">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <form method="post" action="{{ path('app_login') }}">
+                <div class="form-group">
+                    <label for="username">Email</label>
+                    <input
+                        type="email"
+                        id="username"
+                        name="_username"
+                        value="{{ last_username}}"
+                        required
+                        autofocus
+                        placeholder="votre@email.com"
+                        >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="_password" 
+                        required
+                        placeholder="Votre mot de passe"
+                    >
+                </div>
+
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+                <button type="submit" class="btn btn-full">
+                    Se connecter
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                <p>Pas encore de compte ? <a href="{{ path('app_register') }}">Créer un compte</a></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

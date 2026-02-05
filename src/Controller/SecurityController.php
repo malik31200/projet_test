@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
-use Doctrine\ORM\EntityMangerInterface;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,7 +11,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
-class SecurityContoller extends AbstractController
+class SecurityController extends AbstractController
 {
     #[Route('/login', name:'app_login')]
     public function login(AuthenticationUtils $authenticationUtils): Response
@@ -34,7 +34,7 @@ class SecurityContoller extends AbstractController
     }
 
     #[Route('/register', name: 'app_register')]
-    public function register(Rquest $request, UserPasswordHasherInterface $passwordHasher, EntityMangerInterface $em): Response
+    public function register(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $em): Response
     {
         // if already connected, redirect to dashboard
         if ($this->getUser()) {
@@ -52,14 +52,14 @@ class SecurityContoller extends AbstractController
             $errors = [];
 
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                $errors[] = "Veuillez entrer un email invalide";
+                $errors[] = "Veuillez entrer un email valide";
             }
 
             if (empty($password) || strlen($password) < 6) {
                 $errors[] = "Le mot de passe doit contenir au moins 6 caractères";
             }
 
-            if ($password != $confirmPassword) {
+            if ($password !== $confirmPassword) {
                 $errors[] = "Les mots de passes ne correspondent pas";
             }
 
@@ -79,7 +79,7 @@ class SecurityContoller extends AbstractController
                 $user->setEmail($email);
                 $user->setFirstName($firstName);
                 $user->setLastName($lastName);
-                $user->setRole('ROLE_USER');
+                $user->setRoles(['ROLE_USER']);
 
                 // Hash the passwors
                 $hashedPassword = $passwordHasher->hashPassword($user, $password);
@@ -90,9 +90,9 @@ class SecurityContoller extends AbstractController
                 $em->flush();
 
                 // success message
-                $this->addFlash('success', 'Inscription réussie! Vouspouvez maintenant vous connecter');
+                $this->addFlash('success', 'Inscription réussie! Vous pouvez maintenant vous connecter');
 
-                return $this->redirectRoute('app_login');
+                return $this->redirectToRoute('app_login');
             }
 
             // Displays the errors
