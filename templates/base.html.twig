@@ -1,16 +1,57 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
-
-        {% block javascripts %}
-        {% endblock %}
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}Bienvenue chez Actual Sport!{% endblock %}</title>
+        <link rel="stylesheet" href="{{ asset('css/style.css')}}">
+        {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <header>
+            <div class="container">
+                <nav>
+                    <div class="logo">Actual</div>
+                    <ul class="nav-links">
+                        <li><a href="{{ path('app_home') }}">Accueil</a></li>
+                        <li><a href="{{ path('app_courses') }}">Cours</a></li>
+                        <li><a href="{{ path('app_sessions') }}">Sessions</a></li>
+                        <li><a href="{{ path('app_dashboard') }}">Mon espace</a></li>
+                        <li><a href="{{ path('app_admin') }}">Admin</a></li>
+                        {# {% if app.user %}
+                            {% if is_granted('ROLE_ADMIN') %}
+                                <li><a href="{{ path('app_admin') }}">Admin</a></li>
+                            {% endif %}
+                            <li><a href="{{ path('app_logout') }}">Déconnexion</a></li>
+                        {% else %}
+                            <li><a href="{{ path('app_login') }}">Connexion</a></li>
+                            <li><a href="{{ path('app_register') }}">Inscription</a></li>
+                        {% endif %} #}
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <main>
+            <div class="container">
+                {% for message in app.flashes('success') %}
+                    <div class="alert alert-success">{{ message }}</div>
+                {% endfor %}
+
+                {% for message in app.flashes('error') %}
+                    <div class="alert alert-error">{{ message }}</div>
+                {% endfor %}
+
+                {% block body %}{% endblock %}  
+            </div>
+        </main>
+
+        <footer>
+            <div class="container">
+                <p>&copy; 2026 Actual Sport - Tous droits réservés</p>
+            </div>
+        </footer>
+
+        {% block javascripts %}{% endblock %}
     </body>
 </html>

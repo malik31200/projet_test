@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accueil - Actual Sport{% endblock %}
+
+{% block body %}
+<h1>Bienvenue sur Actual Sport ! 💪</h1>
+<p>Ceci est un test pour vérifier que le layout fonctionne.</p>
+
+{% if courses is empty %}
+    <p>Aucun cours disponible.</p>
+{% else %}
+    <h2>Nos cours :</h2>
+    <div class="grid">
+        {% for course in courses %}
+            <div class="card">
+                <h3>{{ course.name }}</h3>
+                <p>{{ course.description }}</p>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+{% endblock %}

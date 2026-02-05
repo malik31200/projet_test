@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Administration - Actual Sport{% endblock %}
+
+{% block  body %}
+    <h1 class="page-title">⚙️ Administration</h1>
+
+    {# Statistiques #}
+
+<div class="stats-grid">
+    <div class="stats-card">
+        <div class="stats-icon">📚</div>
+        <div class="stat-content">
+            <div class="stat-number">{{ coursesCount }}</div>
+            <div class="stat-label">Cours disponible</div>
+        </div>
+    </div>
+
+    <div class"stat-card">
+        <div class="stat-icon">📅</div>
+        <div class="stats-content">
+            <div class="stat-number">{{ sessionsCount }}</div>
+            <div class="stat-label">Sessions programmées</div>
+        </div>
+    </div>
+
+    <div class"stat-card">
+        <div class="stat-icon">👥</div>
+        <div class="stats-content">
+            <div class="stat-number">{{ usersCount }}</div>
+            <div class="stat-label">Utilisateurs inscrits</div>
+        </div>
+    </div>
+</div>
+
+{# Actions rapides #}
+<div class="dashboard-section">
+    <h2 class="section-title"></h2>
+    <div class="admin-actions">
+        <a href="#" class="action-card">
+            <div class="action-icon">➕</div>
+            <div class="action-content">
+                <h3>Créer un cours</h3>
+                <p>Ajouter un nouveau cours au catalogue</p>
+            </div>
+        </a>
+
+        <a href="#" class="action-card">
+            <div class="action-icon">📆</div>
+            <div class="action-content">
+                <h3>Planifier une session</h3>
+                <p>Créer une nouvelle session pour un cours</p>
+            </div>
+        </a>
+
+        <a href="#" class="action-card">
+            <div class="action-icon">📋</div>
+            <div class="action-content">
+                <h3>Voir les réservations</h3>
+                <p>Liste de toutes les réservations</p>
+            </div>
+        </a>
+
+        <a href="#" class="action-card">
+            <div class="action-icon">💰</div>
+            <div class="action-content">
+                <h3>Gérer les paiements</h3>
+                <p>Historique et gestions des paiements</p>
+            </div>
+        </a>
+    </div>
+</div>
+
+{# Activité récente #}
+<div class="dashboard-section">
+    <h2 class="section-title">📊 Vue d'ensemble</h2>
+    <div class="card">
+        <h3>Informations système</h3>
+        <div class="info-grid">
+            <div class="info-item">
+                <span class="info-label">Cours actifs</span>
+                <span class="info-value">{{ coursesCount }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Sessions à venir</span>
+                <span class="info-value">{{ sessionsCount }}</span>
+            </div>
+            <div class="info-item">
+                <span class="info-label">Total utilisateurs</span>
+                <span class="info-value">{{ usersCount }}</span>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

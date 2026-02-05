@@ -1,0 +1,122 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Mon espace - Actual Sport{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">👤 Mon espace</h1>
+
+    {# Mes réservations de sessions #}
+    <div class="dashboard-section">
+        <h2 class="section-title">📅 Mes réservations</h2>
+        {% if registrations is empty %}
+            <div class="card">
+                <p class="text-muted">Vous n'avez aucune réservation pour le moment.</p>
+                <a href="{{ path('app_sessions') }}" class="btn">Réserver une session</a>
+            </div>
+        {% else %}
+            <div class="grid">
+                {% for registration in registrations %}
+                    <div class="card">
+                        <div class="flex-between">
+                            <h3>{{ registration.session.course.name }}</h3>
+                            <span class="badge badge-{{ registration.status }}">
+                                {{ registration.status }}
+                            </span>
+                        </div>
+                        
+                        <div class="session-details">
+                            <div class="detail-item">
+                                <span class="detail-label">📅 Date</span>
+                                <strong>{{ registration.session.startTime|date('d/m/Y') }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">🕐 Horaire</span>
+                                <strong>{{ registration.session.startTime|date('H:i') }} - {{ registration.session.endTime|date('H:i') }}</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">📝 Inscrit le</span>
+                                <span>{{ registration.registeredAt|date('d/m/Y') }}</span>
+                            </div>
+                            {% if registration.sessionBook %}
+                                <div class="detail-item">
+                                    <span class="detail-label">🎫 Payé avec</span>
+                                    <span>{{ registration.sessionBook.name }}</span>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Mes carnets de séances #}
+    <div class="dashboard-section">
+        <h2 class="section-title">🎫 Mes carnets de séances</h2>
+        {% if sessionBooks is empty %}
+            <div class="card">
+                <p class="text-muted">Vous n'avez aucun carnet de séances.</p>
+                <a href="#" class="btn">Acheter un carnet</a>
+            </div>
+        {% else %}
+            <div class="grid">
+                {% for book in sessionBooks %}
+                    <div class="card">
+                        <h3>{{ book.name }}</h3>
+                        <div class="book-info">
+                            <div class="remaining-sessions">
+                                <div class="remaining-number">{{ book.remainingSessions }}</div>
+                                <div class="remaining-label">séances restantes</div>
+                            </div>
+                            <div class="book-details">
+                                <p><strong>Total :</strong> {{ book.totalSessions }} séances</p>
+                                <p><strong>Prix :</strong> {{ book.price }} €</p>
+                                {% if book.expiresAt %}
+                                    <p><strong>Expire le :</strong> {{ book.expiresAt|date('d/m/Y') }}</p>
+                                {% endif %}
+                                <p class="text-muted">Acheté le {{ book.createdAt|date('d/m/Y') }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+
+    {# Mes paiements #}
+    <div class="dashboard-section">
+        <h2 class="section-title">💰 Historique des paiements</h2>
+        {% if payments is empty %}
+            <div class="card">
+                <p class="text-muted">Aucun paiement enregistré.</p>
+            </div>
+        {% else %}
+            <div class="card">
+                <table class="payment-table">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Montant</th>
+                            <th>Méthode</th>
+                            <th>Statut</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for payment in payments %}
+                            <tr>
+                                <td>{{ payment.createdAt|date('d/m/Y H:i') }}</td>
+                                <td><strong>{{ payment.amount }} €</strong></td>
+                                <td>{{ payment.paymentMethod }}</td>
+                                <td>
+                                    <span class="badge badge-{{ payment.status }}">
+                                        {{ payment.status }}
+                                    </span>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,15 @@
+{
+  "editor.quickSuggestions": {
+    "other": true,
+    "comments": false,
+    "strings": true
+  },
+  "editor.acceptSuggestionOnEnter": "on",
+  "html.autoCreateQuotes": true,
+  "html.suggest.html5": true,
+  "emmet.triggerExpansionOnTab": true,
+  "emmet.includeLanguages": {
+    "html.twig": "html",
+    "twig": "html"
+  }
+}

@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} Sessions disponibles - Actual Sport {% endblock %}
+
+{% block body %}
+    <h1 class="page-title">📅 Sessions disponibles</h1>
+
+{% if sessions is empty %}
+    <div class="card">
+    <p>Aucune session disponible pour le moment.</p>
+    </div>
+{% else %}
+    {% for session in sessions %}
+        <div class="card">
+            <div class="flex-between">
+                <div>
+                    <h3>{{ session.course.name }}</h3>
+                    <p class="text-muted">{{ session.course.description }}</p>
+                </div>
+                <div class="badge-spots">
+                    <div class="spots-number">{{ session.availableSpots }}</div>
+                    <div class="spots-label">Places restantes</div>
+                </div>
+            </div>
+
+            <div class="session-info">
+                <div class="session-info-item">
+                    <div class="info-label">📅 Date</div>
+                    <strong>{{ session.startTime|date('d/m/Y') }}</strong>
+                </div>
+                <div class="session-info-item">
+                    <div class="info-label">🕐 Horaire</div>
+                    <strong>{{ session.startTime|date('H:i') }} - {{ session.endTime|date('H:i') }}</strong>
+                </div>
+                <div class="session-info-item">
+                    <div class="info-label">⏱️ Durée</div>
+                    <strong>{{ session.course.duration }} min</strong>
+                </div>
+                <div class="session-info-item">
+                    <div class="info-label">💰 Prix</div>
+                    <strong>{{ session.course.price }} €</strong> 
+                </div>    
+            </div>
+
+            <a href="#" class="btn btn-full">
+                Réserver cette session
+            </a>
+        </div>
+    {% endfor %}
+{% endif %}
+{% endblock %}
