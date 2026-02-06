@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ course ? 'Modifier' : 'Créer' }} un cours - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">{{ course ? '✏️ Modifier' : '➕ Créer' }} un cours</h1>
+        <a href="{{ path('admin_courses_list') }}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+
+    <div class="card form-card">
+        <form method="post">
+            <div class="form-group">
+                <label for="name">Nom du cours *</label>
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    value="{{ course ? course.name : '' }}"
+                    required
+                    placeholder="ex: Yoga débutant"
+                    >
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea
+                    id="description"
+                    name="description"
+                    rows="4"
+                    placeholder="Décrivez le cours..."
+                    >{{ course ? course.description : '' }}</textarea>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="duration">Durée (minutes) *</label>
+                    <input
+                        type="number"
+                        id="duration"
+                        name="duration"
+                        value="{{ course ? course.duration : '' }}"
+                        required
+                        min="15"
+                        step="15"
+                        placeholder="60"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="max_participants">Capacité maximale *</label>
+                    <input
+                        type="number"
+                        id="max_participants"
+                        name="max_participants"
+                        value="{{ course ? course.maxParticipants : '' }}"
+                        required
+                        min='1'
+                        placeholder="10"
+                        >
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="price">Prix (€) *</label>
+                    <input
+                        type="number"
+                        id="price"
+                        name="price"
+                        value="{{ course ? course.price: '' }}"
+                        required
+                        min="0"
+                        step="0.01"
+                        placeholder="25.00"
+                        >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="is_active">Statut</label>
+                <select id="is_active" name="is_active">
+                    <option value="1" {{ course and course.isActive ? 'selected' : ''}}>Actif</option>
+                    <option value="0" {{ course and not course.isActive ? 'selected' : ''}}>Inactif</option>
+                </select>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-full">
+                {{ course ? '💾 Enregistrer les modifications' : '➕ Créer le cours'}}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

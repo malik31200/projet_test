@@ -79,6 +79,7 @@ class SecurityController extends AbstractController
                 $user->setEmail($email);
                 $user->setFirstName($firstName);
                 $user->setLastName($lastName);
+                $user->setCreatedAt(new \DateTimeImmutable());
                 $user->setRoles(['ROLE_USER']);
 
                 // Hash the passwors

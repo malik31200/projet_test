@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des cours - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">📚 Gestion des cours</h1>
+        <a href="{{ path('admin_courses_new') }}" class="btn">➕ Créer un cours.</a>
+    </div>
+
+    {% if courses is empty %}
+        <div class="card">
+            <p class="text-muted">Aucun cours disponible. Créez votre premier cours.</p>
+        </div>
+    {% else %}
+        <div class="card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom</th>
+                        <th>Durée</th>
+                        <th>Capacité</th>
+                        <th>Prix</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                        <tr>
+                            <td>{{ course.id }}</td>
+                            <td><strong>{{ course.name }}</strong></td>
+                            <td>{{ course.duration }} min</td>
+                            <td>{{ course.maxParticipants }} pers.</td>
+                            <td>{{ course.price }} €</td>
+                            <td>
+                                {% if course.isActive %}
+                                    <span class="badge badge-active">Actif</span>
+                                {% else %}
+                                    <span class="badge badge-cancelled">Inactif</span>
+                                {% endif %}
+                            </td>
+                            <td class="action-buttons">
+                                <a href="{{ path('admin_courses_edit', {id: course.id}) }}" class="btn btn-secondary btn-sm">✏️ Modifier</a>
+                                <form method="post" action="{{ path('admin_courses_delete', {id: course.id})}}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce cours ?');">
+                                    <button type="submit" class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

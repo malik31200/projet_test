@@ -9,7 +9,7 @@
 
 <div class="stats-grid">
     <div class="stats-card">
-        <div class="stats-icon">📚</div>
+        <div class="stat-icon">📚</div>
         <div class="stat-content">
             <div class="stat-number">{{ coursesCount }}</div>
             <div class="stat-label">Cours disponible</div>
@@ -35,13 +35,13 @@
 
 {# Actions rapides #}
 <div class="dashboard-section">
-    <h2 class="section-title"></h2>
+    <h2 class="section-title">⚡ Actions rapides</h2>
     <div class="admin-actions">
-        <a href="#" class="action-card">
+        <a href="{{ path('admin_courses_list') }}" class="action-card">
             <div class="action-icon">➕</div>
             <div class="action-content">
-                <h3>Créer un cours</h3>
-                <p>Ajouter un nouveau cours au catalogue</p>
+                <h3>Gérer les cours</h3>
+                <p>Créer, modifier ou supprimer des cours</p>
             </div>
         </a>
 
