@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Une session - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">{{ session ? '✏️ Modifier' : '📅 Planifier' }} une session</h1>
+        <a href="{{ path('admin_sessions_list') }}" class="btn btn-secondary">← Retour à la liste</a>
+    </div>
+
+    <div class="card form-card">
+        <form method="post">
+            <div class="form-group">
+                <label for="course_id">Cours *</label>
+                <select id="course_id" name="course_id" required>
+                    <option value="">--Sélectionnez un cours--</option>
+                    {% for course in courses %}
+                        <option value="{{ course.id }}" {{ session and session.course.id == course.id ? 'selected' : '' }}>
+                            {{ course.name }} ({{ course.duration }} min)
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="start_time">Date et heure de début *</label>
+                    <input
+                        type="datetime-local"
+                        id="start_time"
+                        name="start_time"
+                        value="{{ session ? session.startTime|date('Y-m-d\\TH:i') : ''}}"
+                        required
+                    >
+                </div>
+
+            <div class="form-group">
+                <label for="end_time">Date et heure de fin *</label>
+                    <input
+                        type="datetime-local"
+                        id="end_time"
+                        name="end_time"
+                        value="{{ session ? session.endTime|date('Y-m-d\\TH:i') : ''}}"
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="available_spots">Places disponibles *</label>
+                    <input
+                        type="number"
+                        id="available_spots"
+                        name="available_spots"
+                        value="{{ session ? session.availableSpots : '' }}"
+                        required
+                        min="0"
+                        placeholder="20"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="status">Statut *</label>
+                    <select id="status" name="status" required>
+                        <option value="scheduled" {{ session and session.status == 'scheduled' ? 'selected' : '' }}>Programmée</option>
+                        <option value="completed" {{ session and session.status == 'completed' ? 'selected' : '' }}>Terminée</option>
+                        <option value="cancelled" {{ session and session.status == 'cancelled' ? 'selected' : '' }}>Annulée</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-full">
+                    {{ session ? '💾 Enregistrer les modifications' : '📅 Planifier la session'}}
+                </button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

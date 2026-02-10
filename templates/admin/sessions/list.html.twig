@@ -1,0 +1,62 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des sessions - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">📅 Gestion des sessions</h1>
+        <a href="{{ path('admin_sessions_new') }}" class="btn">➕ Planifier une session</a>
+    </div>
+
+    {% if sessions is empty %}
+        <div class="card">
+            <p class="text-muted">Aucune session planifiée. Créez votre première session !</p>
+        </div>
+        {% else %}
+        <div class="card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Cours</th>
+                        <th>Date</th>
+                        <th>Horaires</th>
+                        <th>Places dispo.</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+            <tbody>
+                {% for session in sessions %}
+                    <tr>
+                        <td>{{ session.id }}</td>
+                        <td><strong>{{ session.course.name }}</strong></td>
+                        <td>{{ session.startTime|date('d/m/Y') }}</td>
+                        <td>{{ session.startTime|date('H:i') }} - {{ session.endTime|date('H:i') }}</td>
+                        <td class="text-center">
+                            <span class="badge {% if session.availableSpots > 0 %}badge-active{% else %}badge-cancelled{% endif %}">
+                                {{ session.availableSpots }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if session.status == 'scheduled' %}
+                                <span class="badge badge-pending">Programmée</span>
+                            {% elseif session.status == 'completed' %}
+                                <span class="badge badge-active">Terminée</span>
+                            {% elseif session.status == 'cancelled' %}
+                                <span class="badge badge-cancelled">Annulée</span>
+                            {% endif %}
+                        </td>
+                        <td class="action-buttons">
+                            <a href="{{ path('admin_sessions_edit', {id: session.id}) }}" class="btn btn-secondary btn-sm">✏️ Modifier</a>
+                            <form method="post" action="{{ path('admin_sessions_delete', {id: session.id}) }}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette session ?');">
+                                <button type="submit" class="btn btn-danger btn-sm">🗑️ Supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+    {% endif %}
+{% endblock %}
