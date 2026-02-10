@@ -1,0 +1,105 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des réservations - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">📋 Gestion des réservations</h1>
+    </div>
+
+    {# Statistics #}
+    <div class="stats-mini-grid">
+        <div class="stats-mini-card">
+            <div class="stat-mini-number">{{ totalRegistrations }}</div>
+            <div class="stat-mini-label">Total réservations</div>
+        </div>
+        <div class="stats-mini-card stat-success">
+            <div class="stat-mini-number">{{ activeCount }}</div>
+            <div class="stat-mini-label">Actives</div>
+        </div>
+        <div class="stats-mini-card stat-danger">
+            <div class="stat-mini-number">{{ cancelledCount }}</div>
+            <div class="stat-mini-label">Annulées</div>
+        </div>
+    </div>
+
+    {# Filters #}
+    <div class="card filter-card">
+        <div class="filter-buttons">
+            <a href="{{ path('admin_registrations_list', {status: 'all'}) }}"
+                class="btn {{ currentStatus == 'all' ? 'btn-primary' : 'btn-secondary' }} btn-sm">
+                 Toutes
+            </a>
+            <a href="{{ path('admin_registrations_list', {status: 'confirmed' }) }}"
+            class="btn {{ currentStatus == 'confirmed' ? 'btn-primary' : 'btn-secondary' }} btn-sm">
+             Actives
+            </a>
+             <a href="{{ path('admin_registrations_list', {status: 'cancelled' }) }}"
+            class="btn {{ currentStatus == 'cancelled' ? 'btn-primary' : 'btn-secondary' }} btn-sm">
+             Annulées
+            </a>
+        </div>
+    </div>
+
+    {# Lists of registrations #}
+    {% if registrations is empty %}
+        <div class="card">
+            <p class="text-muted">Aucune réservation trouvée.</p>
+        </div>
+    {% else %}
+        <div class="card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Utilisateur</th>
+                        <th>Cours</th>
+                        <th>Session</th>
+                        <th>Date d'inscription</th>
+                        <th>Statut</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registration in registrations  %}
+                        <tr>
+                            <td>{{registration.id }}</td>
+                            <td>
+                                <strong>{{ registration.user.firstName }} {{ registration.user.lastName }}</strong>
+                                <br>
+                                <small class="text-muted">{{ registration.user.email }}</small>
+                            </td>
+                            <td>{{ registration.session.course.name }}</td>
+                            <td>
+                                {{ registration.session.startTime|date('d/m/Y') }}
+                                <br>
+                                <small class="text-muted">
+                                    {{ registration.session.startTime|date('H:i') }} - {{ registration.session.endTime|date('H:i') }}
+                                </small>
+                            </td>
+                            <td>{{ registration.registeredAt|date('d/m/Y H:i') }}</td>
+                            <td>
+                                {% if registration.status == 'confirmed' %}
+                                    <span class="badge badge-active">Confirmée</span>
+                                {% elseif registration.status == 'cancelled' %}
+                                    <span class="badge badge-cancelled">Annulée</span>
+                                {% else %}
+                                    <span class="badge badge-pending"{{ registration.status }}></span>
+                                {% endif %}
+                            </td>
+                            <td class="action-buttons">
+                                {% if registration.status != 'cancelled' %}
+                                    <form method="post" action="{{ path('admin_registrations_cancel' , {id: registration.id})}}" style="display:inline;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?')">
+                                        <button type="submit" class="btn btn-danger btn-sm">❌ Annuler</button>
+                                    </form>
+                                {% else %}
+                                    <span class="text-muted">Déjà annulée</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

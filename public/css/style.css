@@ -356,3 +356,55 @@ footer { background: #2c3e50; color: white; text-align: center; padding: 1rem 0;
 .form-actions {
     margin-top: 2rem;
 }
+
+/* Mini Stats */
+.stats-mini-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.stat-mini-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    text-align: center;
+    border-left: 4px solid #3498db;
+}
+
+.stat-mini-card.stat-success {
+    border-left-color: #27ae60;
+}
+
+.stat-mini-card.stat-danger {
+    border-left-color: #e74c3c;
+}
+
+.stat-mini-number {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 0.5rem;
+}
+
+.stat-mini-label {
+    font-size: 0.9rem;
+    color: #7f8c8d;
+}
+
+/* Filter Card */
+.filter-card {
+    margin-bottom: 1.5rem;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.text-center {
+    text-align: center;
+}

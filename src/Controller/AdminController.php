@@ -36,7 +36,7 @@ class AdminController extends AbstractController
             $course->setDuration((int) $request->request->get('duration'));
             $course->setMaxParticipants((int) $request->request->get('max_participants'));
             $course->setPrice($request->request->get('price'));
-            $course->setIsActive($request->request->get('is_active') === 1);
+            $course->setIsActive($request->request->get('is_active') === '1');
             $course->setCreatedAt(new \DateTimeImmutable());
 
             $em->persist($course);
@@ -202,7 +202,7 @@ class AdminController extends AbstractController
         } 
         
         // check if there are registrations
-        $registrations = $em->getrepository(\App\Entity\Registration::class)->findBy(['session' => $session]);
+        $registrations = $em->getRepository(\App\Entity\Registration::class)->findBy(['session' => $session]);
 
         if(count($registrations) > 0) {
             $this->addFlash('error', 'Impossible de supprimer cette session : '. count($registrations) . 'réservation(s) existe(nt). Annulez d\'abord les réservations.');
@@ -215,5 +215,73 @@ class AdminController extends AbstractController
 
         return $this->redirectToRoute('admin_sessions_list');
         
+    }
+
+    // ==================== GESTION DES RÉSERVATIONS ====================
+
+    // list of registrations
+    #[Route('/admin/registrations', name: 'admin_registrations_list')]
+    public function listRegistrations(Request $request, EntityManagerInterface $em): Response
+    {
+        $status = $request->query->get('status', 'all');
+
+        $qb = $em->getRepository(\App\Entity\Registration::class)
+            ->createQueryBuilder('r')
+            ->leftJoin('r.user', 'u')
+            ->leftJoin('r.session', 's')
+            ->leftJoin('s.course', 'c')
+            ->addSelect('u', 's', 'c')
+            ->orderBy('r.registeredAt', 'ASC');
+
+        if ($status != 'all') {
+            $qb->where('r.status = :status')
+                ->setParameter('status', $status);
+        }
+
+        $registrations = $qb->getQuery()->getResult();
+
+        // statistics
+        $totalRegistrations = count($registrations);
+        $activeCount = $em->getRepository(\App\Entity\Registration::class)->count(['status' => 'confirmed']);
+        $cancelledCount = $em->getRepository(\App\Entity\Registration::class)->count(['status' => 'cancelled']);
+
+        return $this->render('admin/registrations/list.html.twig', [
+            'registrations' => $registrations,
+            'currentStatus' => $status,
+            'totalRegistrations' => $totalRegistrations,
+            'activeCount' => $activeCount,
+            'cancelledCount' => $cancelledCount,
+        ]);
+    }
+
+    // Cancelled a registration
+    #[Route('/admin/registrations/cancel/{id}', name: 'admin_registrations_cancel', methods: ['POST'])]
+    public function cancelRegistration($id, EntityManagerInterface $em): Response
+    {
+        $registration = $em->getRepository(\App\Entity\Registration::class)->find($id);
+
+        if (!$registration) {
+            $this->addFlash('error', 'Réservation non trouvée');
+            return $this->redirectToRoute('admin_registrations_list');
+        }
+
+        if ($registration->getStatus() === 'cancelled') {
+            $this->addFlash('error', 'Cette réservation est déjà annulée');
+            return $this->redirectToRoute('admin_registrations_list');
+        }
+
+        // Cancelled the registration
+        $registration->setStatus('cancelled');
+        $registration->setCancelledAt(new \DateTimeImmutable());
+
+        // Free up a space in the session
+        $session = $registration->getSession();
+        if ($session) {
+            $session->setAvailableSpots($session->getAvailableSpots() + 1);
+        }
+        $em->flush();
+
+        $this->addFlash('success', 'Réservation annulée avec succès ! Une place a été libérée.');
+        return $this->redirectToRoute('admin_registrations_list');
     }
 }
