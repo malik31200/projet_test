@@ -284,4 +284,100 @@ class AdminController extends AbstractController
         $this->addFlash('success', 'Réservation annulée avec succès ! Une place a été libérée.');
         return $this->redirectToRoute('admin_registrations_list');
     }
+
+    // ==================== GESTION DES UTILISATEURS ====================
+
+    // List of users
+    #[Route('/admin/users', name: 'admin_users_list')]
+    public function listUsers(EntityManagerInterface $em): Response
+    {
+        $users = $em->getRepository(\App\Entity\User::class)->findAll();
+
+        // Statistics
+        $totalUsers = count($users);
+        $adminCount = 0;
+        $userCount = 0;
+
+        foreach ($users as $user) {
+            if (in_array('ROLE_ADMIN', $user->getRoles())) {
+                $adminCount++;
+            } else {
+                $userCount++;
+            }
+        }
+
+        return $this->render('admin/users/list.html.twig', [
+            'users' => $users,
+            'totalUsers' => $totalUsers,
+            'adminCount' => $adminCount,
+            'userCount' => $userCount,
+        ]);
+    }
+
+    // See a detail of an user
+    #[Route('/admin/users/{id}', name: 'admin_users_show')]
+    public function showUser(int $id, EntityManagerInterface $em): Response
+    {
+        $user = $em->getRepository(\App\Entity\User::class)->find($id);
+
+        if (!$user) {
+            $this->addFlash('error', 'Utilisateur non trouvé');
+            return $this->redirectToRoute('admin_users_list');
+        }
+
+        // Retrieve history
+        $registrations = $em->getRepository(\App\Entity\Registration::class)->findBy(
+            ['user' => $user],
+            ['registeredAt' => 'DESC']
+        );
+
+        $sessionBooks = $em->getRepository(\App\Entity\SessionBook::class)->findBy (
+            ['user' => $user],
+            ['createdAt' => 'DESC']
+        );
+
+        $payments = $em->getRepository(\App\Entity\Payment::class)->findBy (
+            ['user' => $user],
+            ['createdAt' => 'DESC']
+        );
+
+        return $this->render('admin/users/show.html.twig', [
+            'user' => $user,
+            'registrations' => $registrations,
+            'sessionBooks' => $sessionBooks,
+            'payments' => $payments,
+        ]);
+    }
+
+    // Change a user's role
+    #[Route('/admin/users/{id}/toggle-role', name: 'admin_users_toggle_role', methods: ['POST'])]
+    public function toggleRole(int $id, EntityManagerInterface $em): Response
+    {
+        $user = $em->getRepository(\App\Entity\User::class)->find($id);
+
+        if(!$user) {
+            $this->addFlash('error', 'Utilisateur non trouvé');
+            return $this->redirectToRoute('admin_users_list');
+        }
+
+        // Do not change your own role
+        if ($user->getId() === $this->getUser()->getId()) {
+            $this->addFlash('error', 'Vous ne pouvez pas modifier votre propre rôle');
+            return $this->redirectToRoute('admin_users_list');
+        }
+
+        // Toggle between ROLE_USER and ROLE_ADMIN
+        $roles = $user->getRoles();
+        if (in_array('ROLE_ADMIN', $roles)) {
+            $user->setRoles(['ROLE_USER']);
+            $this->addFlash('success', 'Utilisateur rétrogradé en User');           
+        } else {
+            $user->setRoles(['ROLE_ADMIN']);
+            $this->addFlash('success', 'Utilisateur promu en Admin');
+        }
+
+        $em->flush();
+
+        return $this->redirectToRoute('admin_users_list');
+    }
 }
