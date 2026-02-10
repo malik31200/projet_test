@@ -44,19 +44,20 @@
 
             {% if app.user %}
                 {% if session.availableSpots > 0 %}
-                    <form method="post" action="{{ path('booking_reserve', {id: session.id}) }}">
-                        <button type="submit" class="btn btn-full btn-success">
-                            ✅ Réserver cette session
+
+                    <form method="POST" action="{{ path('app_session_book', {id: session.id}) }}" style="margin: 0;">
+                        <button type="submit" class="btn btn-full">
+                            Réserver cette session
                         </button>
                     </form>
                 {% else %}
-                    <button disabled class="btn btn-full btn-disabled">
-                        ❌ Complet
+                    <button class="btn btn-secondary btn-full" disabled>
+                        Complet
                     </button>
                 {% endif %}
             {% else %}
-                <a href="{{ path('app_login')}}" class="btn btn-full btn-primary">
-                    🔐 Connectez-vous pour réserver
+                <a href="{{ path('app_login') }}" class="btn btn-secondary btn-full">
+                    Connectez-vous pour réserver
                 </a>
             {% endif %}
         </div>

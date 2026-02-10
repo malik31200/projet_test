@@ -1,0 +1,48 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement réussi !{% endblock %}
+
+{% block body %}
+    <div style="text-align: center; padding: 2rem 0;">
+        <div style="font-size: 5rem; margin-bottom: 1rem;">✅</div>
+        <h1 class="page-title">Paiement réussi !</h1>
+    </div>
+
+    <div class="card">
+        <h2 style="color: #27ae60;">Votre réservation est confirmée</h2>
+        <p>Merci pour votre paiement. Votre place pour la session suivante a été réservée avec succès :</p>
+
+        <div class="session-info" style="margin: 2rem 0;">
+            <div class="session-info-item">
+                <div class="info-label">📚 Cours</div>
+                <strong>{{ session.course.name }}</strong>
+            </div>
+            <div class="session-info-item">
+                <div class="info-label">📅 Date</div>
+                <strong>{{ session.startTime|date('d/m/Y') }}</strong>
+            </div>
+            <div class="session-info-item">
+                <div class="info-label">🕐 Horaire</div>
+                <strong>{{ session.startTime|date('H:i') }} - {{ session.endTime|date('H:i') }}</strong>
+            </div>
+            <div class="session-info-item">
+                <div class="info-label">💰 Montant payé</div>
+                <strong>{{ session.course.price }} €</strong>
+            </div>
+        </div>
+
+        <div class="alert alert-success">
+            <strong>📧 Email de confirmation</strong><br>
+            Un email de confirmation vous a été envoyé avec tous les détails de votre réservation.
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+            <a href="{{ path('app_dashboard') }}" class="btn btn-full">
+                Voir mes réservations
+            </a>
+            <a href="{{ path('app_sessions') }}" class="btn btn-secondary btn-full">
+                Réserver une autre session
+            </a>
+        </div>
+    </div>
+{% endblock %}

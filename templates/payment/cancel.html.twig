@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement annulé{% endblock %}
+
+{% block body %}
+    <div style="text-align: center; padding: 2rem 0;">
+        <div style="font-size: 5rem; margin-bottom: 1rem;">❌</div>
+        <h1 class="page-title">Paiement annulé</h1>
+    </div>
+
+    <div class="card">
+        <h2>Votre paiement n'a pas été effectué</h2>
+        <p>Vous avez annulé le processus de paiement. Aucun montant n'a été débité de votre compte.</p>
+
+        {% if session %}
+            <div class="alert alert-error" style="margin: 2rem 0;">
+                <strong>⚠️ Attention</strong><br>
+                Votre place pour la session "{{ session.course.name }}" du {{ session.startTime|date('d/m/Y à H:i') }} n'a pas été réservée.
+            </div>
+
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <a href="{{ path('app_payment_session', {id: session.id}) }}" class="btn btn-full">
+                    Réessayer le paiement
+                </a>
+                <a href="{{ path('app_sessions') }}" class="btn btn-secondary btn-full">
+                    Voir d'autres sessions
+                </a>
+            </div>
+        {% else %}
+            <a href="{{ path('app_sessions') }}" class="btn btn-full" style="margin-top: 2rem;">
+                Retour aux sessions
+            </a>
+        {% endif %}
+    </div>
+{% endblock %}

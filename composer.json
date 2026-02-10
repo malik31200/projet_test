@@ -11,6 +11,7 @@
         "doctrine/doctrine-migrations-bundle": "^3.7",
         "doctrine/orm": "^3.6",
         "lexik/jwt-authentication-bundle": "^3.2",
+        "stripe/stripe-php": "^19.3",
         "symfony/asset": "6.4.*",
         "symfony/console": "6.4.*",
         "symfony/dotenv": "6.4.*",

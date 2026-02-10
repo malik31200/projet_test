@@ -3,9 +3,10 @@ body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; background
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
 /* Header */
-header { background: #2c3e50; color: white; padding: 1rem 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+header { background: #000000 !important; color: white; padding: 1rem 0; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
 nav { display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 1.5rem; font-weight: bold; }
+.logo { display: flex; align-items: center; text-decoration: none; }
+.logo-img { height: 50px; width: auto; }
 .nav-links { list-style: none; display: flex; gap: 2rem; }
 .nav-links a { color: white; text-decoration: none; transition: color 0.3s; }
 .nav-links a:hover { color: #3498db; }
@@ -14,7 +15,7 @@ nav { display: flex; justify-content: space-between; align-items: center; }
 main { min-height: calc(100vh - 150px); padding: 2rem 0; }
 
 /* Footer */
-footer { background: #2c3e50; color: white; text-align: center; padding: 1rem 0; margin-top: 2rem; }
+footer { background: #000000 !important; color: white; text-align: center; padding: 1rem 0; margin-top: 2rem; }
 
 /* Buttons */
 .btn { display: inline-block; padding: 0.75rem 1.5rem; background: #3498db; color: white; text-decoration: none; border-radius: 5px; border: none; cursor: pointer; transition: background 0.3s; }

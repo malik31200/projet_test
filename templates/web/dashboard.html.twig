@@ -37,56 +37,35 @@
                                 <span class="detail-label">📝 Inscrit le</span>
                                 <span>{{ registration.registeredAt|date('d/m/Y') }}</span>
                             </div>
-                            {% if registration.sessionBook %}
-                                <div class="detail-item">
-                                    <span class="detail-label">🎫 Payé avec</span>
-                                    <span>{{ registration.sessionBook.name }}</span>
+                            <div class="detail-item">
+                                <span class="detail-label">💰 Prix</span>
+                                <strong>{{ registration.session.course.price }} €</strong>
+                            </div>
+                        </div>
+
+                        {% if registration.status == 'confirmed' %}
+                            {% set now = date() %}
+                            {% set sessionStart = registration.session.startTime %}
+                            {% set hoursDiff = (sessionStart.timestamp - now.timestamp) / 3600 %}
+                            
+                            {% if hoursDiff >= 24 %}
+                                <form method="POST" action="{{ path('app_registration_cancel', {id: registration.id}) }}" style="margin-top: 1rem;" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                    <button type="submit" class="btn btn-danger btn-full">
+                                        ❌ Annuler la réservation
+                                    </button>
+                                </form>
+                            {% else %}
+                                <div class="alert alert-error" style="margin-top: 1rem; padding: 0.75rem;">
+                                    ⚠️ Trop tard pour annuler (délai minimum : 24h)
                                 </div>
                             {% endif %}
-                        </div>
-                        
-                        {% if registration.status == 'confirmed' %}
-                            <form method="post" action="{{ path('booking_cancel', {id: registration.id}) }}" class="cancel-form" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
-                                <button type="submit" class="btn btn-danger btn-small">
-                                    ❌ Annuler ma réservation
-                                </button>
-                            </form>
-                        {% elseif registration.status == 'cancelled' %}
-                            <p class="text-muted">Annulée le {{ registration.cancelledAt|date('d/m/Y à H:i') }}</p>
-                        {% endif %}
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-    </div>
 
-    {# Mes carnets de séances #}
-    <div class="dashboard-section">
-        <h2 class="section-title">🎫 Mes carnets de séances</h2>
-        {% if sessionBooks is empty %}
-            <div class="card">
-                <p class="text-muted">Vous n'avez aucun carnet de séances.</p>
-                <a href="#" class="btn">Acheter un carnet</a>
-            </div>
-        {% else %}
-            <div class="grid">
-                {% for book in sessionBooks %}
-                    <div class="card">
-                        <h3>{{ book.name }}</h3>
-                        <div class="book-info">
-                            <div class="remaining-sessions">
-                                <div class="remaining-number">{{ book.remainingSessions }}</div>
-                                <div class="remaining-label">séances restantes</div>
+                        {% elseif registration.status == 'cancelled' %}
+                            <div class="alert alert-error" style="margin-top: 1rem; padding: 0.75rem;">
+                                🚫 Annulée le {{ registration.cancelledAt|date('d/m/Y à H:i') }}
+
                             </div>
-                            <div class="book-details">
-                                <p><strong>Total :</strong> {{ book.totalSessions }} séances</p>
-                                <p><strong>Prix :</strong> {{ book.price }} €</p>
-                                {% if book.expiresAt %}
-                                    <p><strong>Expire le :</strong> {{ book.expiresAt|date('d/m/Y') }}</p>
-                                {% endif %}
-                                <p class="text-muted">Acheté le {{ book.createdAt|date('d/m/Y') }}</p>
-                            </div>
-                        </div>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
@@ -101,31 +80,26 @@
                 <p class="text-muted">Aucun paiement enregistré.</p>
             </div>
         {% else %}
-            <div class="card">
-                <table class="payment-table">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Montant</th>
-                            <th>Méthode</th>
-                            <th>Statut</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for payment in payments %}
-                            <tr>
-                                <td>{{ payment.createdAt|date('d/m/Y H:i') }}</td>
-                                <td><strong>{{ payment.amount }} €</strong></td>
-                                <td>{{ payment.paymentMethod }}</td>
-                                <td>
-                                    <span class="badge badge-{{ payment.status }}">
-                                        {{ payment.status }}
-                                    </span>
-                                </td>
-                            </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+            <div class="grid">
+                {% for payment in payments %}
+                    <div class="card">
+                        <div class="flex-between">
+                            <div>
+                                <strong style="font-size: 1.2rem;">{{ payment.amount }} €</strong>
+                                <p class="text-muted" style="margin-top: 0.5rem;">
+                                    {{ payment.createdAt|date('d/m/Y à H:i') }}
+                                </p>
+                            </div>
+                            <span class="badge badge-success">Payé</span>
+                        </div>
+                        {% if payment.registration %}
+                            <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid #eee;">
+                                <p><strong>Session :</strong> {{ payment.registration.session.course.name }}</p>
+                                <p class="text-muted">{{ payment.registration.session.startTime|date('d/m/Y à H:i') }}</p>
+                            </div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
             </div>
         {% endif %}
     </div>

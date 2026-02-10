@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Paiement - {{ session.course.name }}{% endblock %}
+
+{% block body %}
+    <h1 class="page-title">💳 Paiement de votre session</h1>
+
+    <div class="card">
+        <h2>{{ session.course.name }}</h2>
+        <p class="text-muted">{{ session.course.description }}</p>
+
+        <div class="session-info">
+            <div class="session-info-item">
+                <div class="info-label">📅 Date</div>
+                <strong>{{ session.startTime|date('d/m/Y') }}</strong>
+            </div>
+            <div class="session-info-item">
+                <div class="info-label">🕐 Horaire</div>
+                <strong>{{ session.startTime|date('H:i') }} - {{ session.endTime|date('H:i') }}</strong>
+            </div>
+            <div class="session-info-item">
+                <div class="info-label">⏱️ Durée</div>
+                <strong>{{ session.course.duration }} min</strong>
+            </div>
+            <div class="session-info-item">
+                <div class="info-label">💰 Prix</div>
+                <strong>{{ session.course.price }} €</strong>
+            </div>
+        </div>
+
+        <div style="margin-top: 2rem; padding: 1.5rem; background: #f8f9fa; border-radius: 8px;">
+            <h3 style="margin-bottom: 1rem;">Récapitulatif du paiement</h3>
+            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                <span>Prix de la session</span>
+                <strong>{{ session.course.price }} €</strong>
+            </div>
+            <hr style="margin: 1rem 0;">
+            <div style="display: flex; justify-content: space-between; font-size: 1.2rem;">
+                <strong>Total à payer</strong>
+                <strong style="color: #3498db;">{{ session.course.price }} €</strong>
+            </div>
+        </div>
+
+        <form method="POST" action="{{ path('app_payment_checkout', {id: session.id}) }}" style="margin-top: 2rem;">
+            <button type="submit" class="btn btn-full" style="padding: 1rem; font-size: 1.1rem;">
+                🔒 Procéder au paiement sécurisé
+            </button>
+        </form>
+
+        <a href="{{ path('app_sessions') }}" class="btn btn-secondary btn-full" style="margin-top: 1rem;">
+            Retour aux sessions
+        </a>
+
+        <p style="text-align: center; margin-top: 1.5rem; color: #7f8c8d; font-size: 0.9rem;">
+            🔐 Paiement sécurisé par Stripe
+        </p>
+    </div>
+{% endblock %}

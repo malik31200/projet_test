@@ -24,7 +24,7 @@ services:
       MYSQL_USER: actual_user
       MYSQL_PASSWORD: actual_pass
     ports:
-      - "3307:3306"
+      - "3309:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
@@ -35,7 +35,7 @@ services:
     image: nginx:alpine
     container_name: projet_actual_nginx
     ports:
-      - "8080:80"
+      - "8083:80"
     volumes:
       - ./:/var/www/html
       - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
