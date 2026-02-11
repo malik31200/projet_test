@@ -47,6 +47,7 @@ class SecurityController extends AbstractController
             $confirmPassword = $request->request->get('confirm_password');
             $firstName = $request->request->get('first_name');
             $lastName = $request->request->get('last_name');
+            $phone = $request->request->get('phone');
 
             // Basic validation
             $errors = [];
@@ -79,6 +80,7 @@ class SecurityController extends AbstractController
                 $user->setEmail($email);
                 $user->setFirstName($firstName);
                 $user->setLastName($lastName);
+                $user->setPhone($phone);
                 $user->setCreatedAt(new \DateTimeImmutable());
                 $user->setRoles(['ROLE_USER']);
 

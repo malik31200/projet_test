@@ -431,3 +431,15 @@ footer { background: #2c3e50; color: white; text-align: center; padding: 1rem 0;
     margin-bottom: 1rem;
     font-size: 1.3rem;
 }
+
+/* News variantes of buttons */
+.btn-primary { background: #2c3e50; }
+.btn-primary:hover { background: #1a252f; }
+.btn-success { background: #27ae60; }
+.btn-success:hover { background: #229954; }
+.btn-disabled { background: #bdc3c7; cursor: not-allowed; }
+.btn-small { padding: 0.5rem 1rem; font-size: 0.9rem; }
+
+/* Badges for the status */
+.badge-confirmed { background: #d4edda; color: #155724; }
+.badge-cancelled { background: #f8d7da; color: #721c24; }

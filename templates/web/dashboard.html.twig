@@ -44,6 +44,16 @@
                                 </div>
                             {% endif %}
                         </div>
+                        
+                        {% if registration.status == 'confirmed' %}
+                            <form method="post" action="{{ path('booking_cancel', {id: registration.id}) }}" class="cancel-form" onsubmit="return confirm('Êtes-vous sûr de vouloir annuler cette réservation ?');">
+                                <button type="submit" class="btn btn-danger btn-small">
+                                    ❌ Annuler ma réservation
+                                </button>
+                            </form>
+                        {% elseif registration.status == 'cancelled' %}
+                            <p class="text-muted">Annulée le {{ registration.cancelledAt|date('d/m/Y à H:i') }}</p>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
