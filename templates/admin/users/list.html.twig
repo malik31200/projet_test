@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des utilisateurs - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">Gestion des utilisateurs</h1>
+    </div>
+
+    {# Statistics #}
+    <div class="stats-mini-grid">
+        <div class="stat-mini-card">
+            <div class="stat-mini-number">{{ totalUsers }}</div>
+            <div class="stat-mini-label">Total d'utilisateurs</div>
+        </div>
+        <div class="stat-mini-card stat-success">
+            <div class="stat-mini-number">{{ adminCount }}</div>
+            <div class="stat-mini-label">Admins</div>
+        </div>
+    </div>
+
+    {# List of users #}
+    {% if users is empty %}
+        <div class="card">
+            <p class="text-muted">Aucun utilisateur trouvé.</p>
+        </div>
+    {% else %}
+        <div class="card">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nom complet</th>
+                        <th>Email</th>
+                        <th>Rôle</th>
+                        <th>Inscrit le</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                        <tr>
+                            <td>{{ user.id }}</td>
+                            <td>
+                                <strong>{{ user.firstName }} {{ user.lastName }} </strong>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if 'ROLE_ADMIN' in user.roles %}
+                                    <span class="badge badge-cancelled">👑 Admin</span>
+
+                                {% else %}
+                                    <span class="badge badge-pending">👤 User</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.createdAt|date('d/m/Y') }}</td>
+                            <td class="action-buttons">
+                                <a href="{{ path('admin_users_show', {id: user.id}) }}" class="btn btn-secondary btn-sm">👁️ Voir</a>
+
+                                {% if user.id != app.user.id %}
+                                    <form method="post" action="{{ path('admin_users_toggle_role', {id: user.id}) }}" style="display:inline;">
+                                        {% if 'ROLE_ADMIN' in user.roles %}
+                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Rétrograder cet admin en user ?');">
+                                                ⬇️ User
+                                            </button>
+                                        {% else %}
+                                            <button type="submit" class="btn btn-primary btn-sm" onclick="return confirm('Promouvoir cet utilisateur en admin ?');">
+                                                ⬆️ Admin
+                                            </button>
+                                        {% endif %}
+                                    </form>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% endif %}
+{% endblock %}

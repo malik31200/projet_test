@@ -1,0 +1,140 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ user.firstName }}{{ user.lastName }} - Admin{% endblock %}
+
+{% block body %}
+    <div class="admin-header">
+        <h1 class="page-title">👤 {{ user.firstName }} {{ user.lastName }}</h1>
+        <a href="{{ path('admin_users_list') }}" class="btn btn-secondary">Retour à la liste</a>
+    </div>
+
+    {# User Information #}
+    <div class="card">
+        <h2>📋 Informations</h2>
+        <div class="user-info">
+            <div class="user-info-row">
+                <span class="user-info-label">Email :</span>
+                <strong>{{ user.email }}</strong>
+            </div>
+            <div class="user-info-row">
+                <span class"user-info-label">Téléphone : </span>
+                <strong>{{ user.phone ?? ' Non renseigné' }}</strong>
+            </div>
+            <div class="user-info-row">
+                <span class="user-info-label">Rôle :</span>
+                {% if 'ROLE_ADMIN' in user.roles %}
+                    <span class="badge badge-cancelled">👑 Admin</span>
+                {% else %}
+                     <span class="badge badge-pending">👤 User</span>
+                {% endif %}
+            </div>
+            <div class="user-info-row">
+                <span class="user-info-label">Inscrit le :</span>
+                <strong>{{ user.createdAt|date('d/m/Y à H:i') }}</strong>
+            </div>
+        </div>
+    </div>
+
+    {# Réservation #}
+    <div class="card">
+        <h2>📅 Réservations ({{ registrations|length }})</h2>
+        {% if registrations is empty %}
+            <p class="text-muted">Aucune réservation</p>
+        {% else %}
+            <table class="admin-table">
+            <thead>
+                <tr>
+                    <th>Cours</th>
+                    <th>Session</th>
+                    <th>Date d'inscription</th>
+                    <th>Statut</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for registration in registrations %}
+                    <tr>
+                        <td>{{ registration.session.course.name}}</td>
+                        <td>{{ registration.session.startTime|date('d/m/Y H:i') }}</td>
+                        <td>{{ registration.registeredAt|date('d/m/Y H:i') }}</td>
+                        <td>
+                            {% if registration.status == 'confirmed' %}
+                                <span class="badge badge-active">Confirmée</span>
+                                {% else %}
+                                    <span class="badge badge-cancelled">Annulée</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    {# Session Books #}
+    <div class="card">
+        <h2>🎫 Carnets de séances ({{ sessionBooks|length }})</h2>
+        {% if sessionBooks is empty %}
+            <p class="text-muted">Aucun carnet acheté</p>
+        {% else %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Nom</th>
+                        <th>Séances restantes</th>
+                        <th>Prix</th>
+                        <th>Acheté le</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for book in sessionBooks  %}
+                        <tr>
+                            <td>{{ book.name }}</td>
+                            <td>
+                                <strong>{{ book.remainingSessions }}</strong>
+                            </td>
+                            <td>{{ book.price }}</td>
+                            <td>{{ book.createdAt|date('d/m/Y') }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+
+    {# Paiements #}
+    <div class="card">
+        <h2>💰 Paiements ({{ payments|length }})</h2>
+        {% if payments is empty %}
+            <p class="text-muted">Aucun paiement</p>
+        {% else %}
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Montant</th>
+                        <th>Type</th>
+                        <th>ID Stripe</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for payment in payments %}
+                        <tr>
+                            <td>{{ payment.createdAt|date('d/m/Y') }}</td>
+                            <td><strong>{{ payment.amount }}</strong></td>
+                            <td>
+                                {% if payment.sessionBook %}
+                                    <span class="badge badge-pending">Carnet</span>
+                                {% elseif payment.registration %}
+                                    <span class="badge badg-active">Réservation</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <small class="text-muted">{{ payment.stripePaymentId ??  'N/A' }}</small>
+                            </td>
+                        </tr>
+                     {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </div>
+{% endblock %}

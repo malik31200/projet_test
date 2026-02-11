@@ -285,7 +285,7 @@ class AdminController extends AbstractController
         return $this->redirectToRoute('admin_registrations_list');
     }
 
-    // ==================== GESTION DES UTILISATEURS ====================
+    // ==================== HANDLE USERS ====================
 
     // List of users
     #[Route('/admin/users', name: 'admin_users_list')]
