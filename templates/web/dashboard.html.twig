@@ -20,7 +20,13 @@
                         <div class="flex-between">
                             <h3>{{ registration.session.course.name }}</h3>
                             <span class="badge badge-{{ registration.status }}">
-                                {{ registration.status }}
+                                {% if registration.status == 'confirmed' %}
+                                    Confirmé
+                                {% elseif registration.status == 'cancelled' %}
+                                    Annulé
+                                {% else %}
+                                    {{ registration.status }}
+                                {% endif %}
                             </span>
                         </div>
                         
